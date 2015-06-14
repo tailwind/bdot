@@ -12,7 +12,7 @@ This project has three goals, each slightly more fantastic than the last:
 2. Allow computation on (slightly compressed) data at speeds that improve on `numpy.dot`
 
 
-3. Allow computation on (compressed) data which resides on disk at some small multiple (~2-3x) of the speed of `numpy.dot`
+3. Allow computation on (compressed) data which resides on disk at some sizable percentage (~50-30%) of the speed of `numpy.dot`
 
 
 So far, the first goal has been met, bdot makes your RAM bigger on the inside.
