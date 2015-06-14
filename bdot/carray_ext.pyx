@@ -33,25 +33,33 @@ cpdef dot_int64(carray matrix, np.ndarray[np.int64_t, ndim=1] vector):
 
 	cdef chunk chunk_
 
-	cdef Py_ssize_t i, chunklen, leftover_count
+	cdef Py_ssize_t i, chunk_start, chunk_len, leftover_len
+	cdef unsigned int result_j, j
+
+	chunk_len = matrix.chunklen
 
 	leftover_count = cython.cdiv(matrix.leftover, matrix.atomsize)
 
-	chunklen = matrix.chunklen
 
 	for i in range(matrix.nchunks):
 		chunk_ = matrix.chunks[i]
 
-		chunk_._getitem(0, chunklen, m_i.data)
+		chunk_._getitem(0, chunk_len, m_i.data)
 		dot_i = np.dot(m_i, vector)
 
+		# copy to result
+		chunk_start = i * chunk_len
+		for j in range(chunk_len):
+			result_j = <unsigned int> (chunk_start + j)
+			result[result_j] = dot_i[j]
 
-		result[i*chunklen:(i+1)*chunklen] = dot_i
-
-	if leftover_count > 0:
+	if leftover_len > 0:
 		dot_i = np.dot(matrix.leftover_array, vector)
 
-		result[(i+1)*chunklen:] = dot_i[:leftover_count]
+		chunk_start = (i + 1) * chunk_len
+		for j in range(leftover_len):
+			result_j = <unsigned int> (chunk_start + j)
+			result[result_j] = dot_i[j]
 
 
 	return result
