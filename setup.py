@@ -71,5 +71,5 @@ setup(
                     include_dirs=inc_dirs,
                     sources=sources_carray)
           ],
-    packages=['bdot']
+    packages=['bdot', 'bdot.tests']
 )
