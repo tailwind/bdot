@@ -13,8 +13,9 @@ from bcolz.carray_ext cimport carray, chunk
 # http://docs.cython.org/src/tutorial/numpy.html
 
 ctypedef fused int_or_float:
-	np.float64_t
 	np.int64_t
+	np.float64_t
+	np.float32_t
 
 
 @cython.wraparound(False)
@@ -23,8 +24,10 @@ cpdef _dot(carray matrix, np.ndarray[int_or_float, ndim=1] vector):
 
 	if int_or_float is np.int64_t:
 		p_dtype = np.int64
-	else:
+	elif int_or_float is np.float64_t:
 		p_dtype = np.float64
+	else:
+		p_dtype = np.float32
 
 	cdef np.ndarray[int_or_float] dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
 

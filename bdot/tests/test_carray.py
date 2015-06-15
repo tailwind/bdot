@@ -31,3 +31,17 @@ def test_dot_float64():
 	expected = matrix.dot(v)
 
 	assert_array_equal(expected, result)
+
+
+def test_dot_float32():
+
+
+	matrix = np.random.random_sample(size=(30000, 100)).astype('float32')
+	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
+
+	v = bcarray[0]
+
+	result = bcarray.dot(v)
+	expected = matrix.dot(v)
+
+	assert_array_equal(expected, result)
