@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal
 def test_dot_int64():
 
 
-	matrix = np.random.random_integers(0, 12000, size=(30000, 100))
+	matrix = np.random.random_integers(0, 12000, size=(3000, 100))
 	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
 
 	v = bcarray[0]
@@ -21,7 +21,7 @@ def test_dot_int64():
 def test_dot_int32():
 
 
-	matrix = np.random.random_integers(0, 12000, size=(30000, 100)).astype('int32')
+	matrix = np.random.random_integers(0, 12000, size=(3000, 100)).astype('int32')
 	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
 
 	v = bcarray[0]
@@ -34,7 +34,7 @@ def test_dot_int32():
 def test_dot_float64():
 
 
-	matrix = np.random.random_sample(size=(30000, 100))
+	matrix = np.random.random_sample(size=(3000, 100))
 	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
 
 	v = bcarray[0]
@@ -48,7 +48,7 @@ def test_dot_float64():
 def test_dot_float32():
 
 
-	matrix = np.random.random_sample(size=(30000, 100)).astype('float32')
+	matrix = np.random.random_sample(size=(3000, 100)).astype('float32')
 	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
 
 	v = bcarray[0]
