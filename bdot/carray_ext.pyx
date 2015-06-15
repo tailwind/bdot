@@ -38,7 +38,7 @@ cpdef dot_int64(carray matrix, np.ndarray[np.int64_t, ndim=1] vector):
 
 	chunk_len = matrix.chunklen
 
-	leftover_count = cython.cdiv(matrix.leftover, matrix.atomsize)
+	leftover_len = cython.cdiv(matrix.leftover, matrix.atomsize)
 
 
 	for i in range(matrix.nchunks):
