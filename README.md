@@ -9,6 +9,16 @@ you also get (mostly) transparant compressed disk based storage for free.
 
 Only `matrix . vector` (nearest-neighbor-search style) dot products are supported, right now.
 
+## Install
+`pip install bdot`
+
+or build from source
+
+```python
+python setup.py build_ext --inplace
+python setup.py install
+```
+
 ## Usage
 
 ```python
