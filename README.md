@@ -7,7 +7,7 @@ you also get (mostly) transparant compressed disk based storage for free.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
 
-Only `matrix . vector` (nearest-neighbor-search style) dot products are suppored, right now.
+Only `matrix . vector` (nearest-neighbor-search style) dot products are supported, right now.
 
 ## Usage
 
