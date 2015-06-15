@@ -1,6 +1,12 @@
 # Fast Dot Products on Pretty Big Data
 
-Right now only `matrix . vector` (nearest neighbor search style) dot products are suppored.
+[![Build Status](https://travis-ci.org/pinleague/bdot.svg)](https://travis-ci.org/pinleague/bdot)
+
+Bdot makes your ram bigger on the inside.
+
+![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
+
+Only `matrix . vector` (nearest neighbor search style) dot products are suppored, right now.
 
 ## Goals
 
@@ -15,9 +21,7 @@ This project has three goals, each slightly more fantastic than the last:
 3. Allow computation on (compressed) data which resides on disk at some sizable percentage (~50-30%) of the speed of `numpy.dot`
 
 
-So far, the first goal has been met, bdot makes your RAM bigger on the inside.
-
-![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
+So far, the first goal has been met.
 
 [Bcolz](https://github.com/Blosc/bcolz/) is the reason these things are possible.
 

@@ -1,0 +1,13 @@
+language: python
+python:
+- 2.7
+- 3.4
+install:
+- pip install --install-option='--no-cython-compile' cython
+- pip install numpy
+- pip install bcolz
+- python setup.py build_ext --inplace
+script:
+- nosetests bdot
+notifications:
+email: false
