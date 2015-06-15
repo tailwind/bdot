@@ -1,9 +1,6 @@
 import numpy as np
 cimport numpy as np
 
-#from numpy cimport ndarray, dtype, npy_intp, npy_int32, \
-#    npy_uint64, npy_int64, npy_float64, npy_bool
-
 import cython
 import bcolz as bz
 from bcolz.carray_ext cimport carray, chunk
@@ -11,6 +8,9 @@ from bcolz.carray_ext cimport carray, chunk
 
 # numpy optimizations from:
 # http://docs.cython.org/src/tutorial/numpy.html
+
+# fused types (templating) from
+# http://docs.cython.org/src/userguide/fusedtypes.html
 
 ctypedef fused int_or_float:
 	np.int64_t
