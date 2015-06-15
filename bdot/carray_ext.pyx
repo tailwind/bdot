@@ -12,24 +12,25 @@ from bcolz.carray_ext cimport carray, chunk
 # numpy optimizations from:
 # http://docs.cython.org/src/tutorial/numpy.html
 
-
-@cython.wraparound(False)
-@cython.boundscheck(False)
-cpdef dot_float64(carray matrix, np.ndarray[np.float64_t, ndim=1] vector):
-
-
-	return vector
+ctypedef fused int_or_float:
+	np.float64_t
+	np.int64_t
 
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cpdef dot_int64(carray matrix, np.ndarray[np.int64_t, ndim=1] vector):
-	
-	cdef np.ndarray[np.int64_t] dot_i = np.empty(matrix.chunklen, dtype=np.int64)
+cpdef _dot(carray matrix, np.ndarray[int_or_float, ndim=1] vector):
 
-	cdef np.ndarray[np.int64_t, ndim=2] m_i = np.empty((matrix.chunklen, matrix.shape[1]), dtype=np.int64)
+	if int_or_float is np.int64_t:
+		p_dtype = np.int64
+	else:
+		p_dtype = np.float64
 
-	cdef np.ndarray[np.int64_t] result = np.empty(matrix.shape[0], dtype=np.int64)
+	cdef np.ndarray[int_or_float] dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
+
+	cdef np.ndarray[int_or_float, ndim=2] m_i = np.empty((matrix.chunklen, matrix.shape[1]), dtype=p_dtype)
+
+	cdef np.ndarray[int_or_float] result = np.empty(matrix.shape[0], dtype=p_dtype)
 
 	cdef chunk chunk_
 

@@ -11,9 +11,4 @@ class carray(bcolz.carray):
 
 		col_dtype = self.dtype
 
-		if col_dtype == np.float64:
-			return carray_ext.dot_float64(self, vector)
-
-		elif col_dtype == np.int64:
-			return carray_ext.dot_int64(self, vector)
-
+		return carray_ext._dot(self, vector)
