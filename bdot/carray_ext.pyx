@@ -14,6 +14,7 @@ from bcolz.carray_ext cimport carray, chunk
 
 ctypedef fused int_or_float:
 	np.int64_t
+	np.int32_t
 	np.float64_t
 	np.float32_t
 
@@ -24,6 +25,8 @@ cpdef _dot(carray matrix, np.ndarray[int_or_float, ndim=1] vector):
 
 	if int_or_float is np.int64_t:
 		p_dtype = np.int64
+	elif int_or_float is np.int32_t:
+		p_dtype = np.int32
 	elif int_or_float is np.float64_t:
 		p_dtype = np.float64
 	else:

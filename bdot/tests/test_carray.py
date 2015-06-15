@@ -18,6 +18,18 @@ def test_dot_int64():
 
 	assert_array_equal(expected, result)
 
+def test_dot_int32():
+
+
+	matrix = np.random.random_integers(0, 12000, size=(30000, 100)).astype('int32')
+	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
+
+	v = bcarray[0]
+
+	result = bcarray.dot(v)
+	expected = matrix.dot(v)
+
+	assert_array_equal(expected, result)
 
 def test_dot_float64():
 
