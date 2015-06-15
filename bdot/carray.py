@@ -9,6 +9,4 @@ class carray(bcolz.carray):
 
 	def dot(self, vector):
 
-		col_dtype = self.dtype
-
 		return carray_ext._dot(self, vector)
