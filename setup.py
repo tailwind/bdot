@@ -61,7 +61,7 @@ from numpy.distutils.misc_util import get_numpy_include_dirs
 inc_dirs.extend(get_numpy_include_dirs())
 
 setup(
-    name = 'Space Elevator',
+    name = 'bdot',
     version = VERSION,
     description = 'A fast dot product library built on Bcolz',
     url='https://github.com/pinleague/bdot',
