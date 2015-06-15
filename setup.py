@@ -64,12 +64,29 @@ setup(
     name = 'bdot',
     version = VERSION,
     description = 'A fast dot product library built on Bcolz',
+    long_description= 'Bdot makes your RAM bigger on the inside. It leverages the compression and chunking capabilities of Bcolz to compute dot products on data sets that don\'t fit in RAM. It can also (optionally) persist data sets to disk. It was created, initially, for nearest neighbor search.',
     url='https://github.com/pinleague/bdot',
+    author='Waylon Flinn',
     cmdclass={'build_ext' : bdot_build_ext},
     ext_modules = [
           Extension("bdot.carray_ext",
                     include_dirs=inc_dirs,
                     sources=sources_carray)
           ],
-    packages=['bdot', 'bdot.tests']
+    packages=['bdot', 'bdot.tests'],
+    install_requires=['cython>=0.20', 'numpy>=1.7.0', 'bcolz>=0.9.0'],
+    license='MIT',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Software Development',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4'
+    ],
+    keywords='dot product compression bcolz numpy'
 )
