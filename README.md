@@ -2,28 +2,12 @@
 
 [![Build Status](https://travis-ci.org/pinleague/bdot.svg)](https://travis-ci.org/pinleague/bdot)
 
-Bdot makes your ram bigger on the inside.
+Bdot makes your ram bigger on the inside. Since it's based on [Bcolz](https://github.com/Blosc/bcolz/)
+you also get (mostly) transparant compressed disk based storage for free.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
 
-Only `matrix . vector` (nearest neighbor search style) dot products are suppored, right now.
-
-## Goals
-
-This project has three goals, each slightly more fantastic than the last:
-
-1. Allow computation on (compressed) data which is (~5-10x) larger than RAM at approximately the same speed as `numpy.dot`
-
-
-2. Allow computation on (slightly compressed) data at speeds that improve on `numpy.dot`
-
-
-3. Allow computation on (compressed) data which resides on disk at some sizable percentage (~50-30%) of the speed of `numpy.dot`
-
-
-So far, the first goal has been met.
-
-[Bcolz](https://github.com/Blosc/bcolz/) is the reason these things are possible.
+Only `matrix . vector` (nearest-neighbor-search style) dot products are suppored, right now.
 
 ## Usage
 
@@ -38,6 +22,11 @@ bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
 v = bcarray[0]
 
 result = bcarray.dot(v)
+expected = matrix.dot(v)
+
+# should return True
+(expected == result).all()
+
 ```
 
 ## Simple Benchmarks
@@ -58,25 +47,32 @@ compression ratio on real world (non-random) data tends to be better (~5x)
 ### Time
 ```
 %timeit -n30 -r2 bcarray.dot(v)
-```
 
-`30 loops, best of 2: 48.2 ms per loop`
+30 loops, best of 2: 48.2 ms per loop
+```
 
 ```
 %timeit -n30 -r2 matrix.dot(v)
+
+30 loops, best of 2: 33 ms per loop
 ```
 
-`30 loops, best of 2: 33 ms per loop`
+## Goals
+
+This project has three goals, each slightly more fantastic than the last:
+
+1. Allow computation on (compressed) data which is (~5-10x) larger than RAM at approximately the same speed as `numpy.dot`
 
 
-## Tests
+2. Allow computation on (slightly compressed) data at speeds that improve on `numpy.dot`
 
-```
-(bcarray.dot(v) == matrix.dot(v)).all()
-```
 
-`True`
+3. Allow computation on (compressed) data which resides on disk at some sizable percentage (~50-30%) of the speed of `numpy.dot`
+
+
+So far, the first goal has been met.
+
 
 ## Acknowledgements
 
-This library wouldn't be possible without all the talented people who worked hard to create Bcolz (and the libraries on which it's based). Initial code was also heavily influenced by [Bquery](https://github.com/visualfabriq/bquery).
+This library wouldn't be possible without all the talented people who worked hard to create [Bcolz](https://github.com/Blosc/bcolz/) (and the libraries on which it's based). Initial code was also heavily influenced by [Bquery](https://github.com/visualfabriq/bquery).
