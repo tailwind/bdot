@@ -3,7 +3,7 @@ import nose
 import bdot
 import bcolz
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 
 def test_dot_int64():
 
@@ -42,7 +42,7 @@ def test_dot_float64():
 	result = bcarray.dot(v)
 	expected = matrix.dot(v)
 
-	assert_array_equal(expected, result)
+	assert_array_almost_equal(expected, result, decimal=5)
 
 
 def test_dot_float32():
@@ -56,4 +56,4 @@ def test_dot_float32():
 	result = bcarray.dot(v)
 	expected = matrix.dot(v)
 
-	assert_array_equal(expected, result)
+	assert_array_almost_equal(expected, result, decimal=5)
