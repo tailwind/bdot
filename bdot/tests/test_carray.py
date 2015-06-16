@@ -1,4 +1,5 @@
 import nose
+from nose.tools import raises
 
 import bdot
 import bcolz
@@ -57,3 +58,16 @@ def test_dot_float32():
 	expected = matrix.dot(v)
 
 	assert_array_almost_equal(expected, result, decimal=5)
+
+@raises(ValueError)
+def test_dot_incompatible_dtype():
+
+	matrix = np.random.random_integers(0, 12000, size=(10000, 100))
+	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
+
+	v = bcarray[0].astype('int32')
+
+	result = bcarray.dot(v)
+	expected = matrix.dot(v)
+
+	assert_array_equal(expected, result)
