@@ -12,7 +12,7 @@ Only `matrix . vector` (nearest-neighbor-search style) dot products are supporte
 ## Install
 `pip install bdot`
 
-or build from source
+or build from source (requires bcolz >= 0.9.0)
 
 ```python
 python setup.py build_ext --inplace
