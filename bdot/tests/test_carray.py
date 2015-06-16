@@ -68,6 +68,13 @@ def test_dot_incompatible_dtype():
 	v = bcarray[0].astype('int32')
 
 	result = bcarray.dot(v)
-	expected = matrix.dot(v)
 
-	assert_array_equal(expected, result)
+
+@raises(ValueError)
+def test_dot_incompatible_shapes():
+
+	matrix = np.random.random_integers(0, 12000, size=(10000, 101))
+	bcarray = bdot.carray(matrix[:, :100], chunklen=2**13, cparams=bcolz.cparams(clevel=2))
+
+
+	result = bcarray.dot(matrix)
