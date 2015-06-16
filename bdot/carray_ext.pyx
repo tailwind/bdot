@@ -12,7 +12,7 @@ from bcolz.carray_ext cimport carray, chunk
 # fused types (templating) from
 # http://docs.cython.org/src/userguide/fusedtypes.html
 
-ctypedef fused int_or_float:
+ctypedef fused numpy_native_number:
 	np.int64_t
 	np.int32_t
 	np.float64_t
@@ -21,22 +21,22 @@ ctypedef fused int_or_float:
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cpdef _dot(carray matrix, np.ndarray[int_or_float, ndim=1] vector):
+cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector):
 
-	if int_or_float is np.int64_t:
+	if numpy_native_number is np.int64_t:
 		p_dtype = np.int64
-	elif int_or_float is np.int32_t:
+	elif numpy_native_number is np.int32_t:
 		p_dtype = np.int32
-	elif int_or_float is np.float64_t:
+	elif numpy_native_number is np.float64_t:
 		p_dtype = np.float64
 	else:
 		p_dtype = np.float32
 
-	cdef np.ndarray[int_or_float] dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number] dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
 
-	cdef np.ndarray[int_or_float, ndim=2] m_i = np.empty((matrix.chunklen, matrix.shape[1]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] m_i = np.empty((matrix.chunklen, matrix.shape[1]), dtype=p_dtype)
 
-	cdef np.ndarray[int_or_float] result = np.empty(matrix.shape[0], dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number] result = np.empty(matrix.shape[0], dtype=p_dtype)
 
 	cdef chunk chunk_
 
