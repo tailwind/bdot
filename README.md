@@ -1,4 +1,5 @@
-# Fast Dot Products on Pretty Big Data
+# Bdot
+## Fast Dot Products on Pretty Big Data
 
 [![Build Status](https://travis-ci.org/pinleague/bdot.svg)](https://travis-ci.org/pinleague/bdot)
 
@@ -10,11 +11,13 @@ you also get (mostly) transparant compressed disk based storage for free.
 Supports `matrix . vector` and `matrix . matrix` for most common numpy numeric data types (`numpy.int64`, `numpy.int32`, `numpy.float64`, `numpy.float32`)
 
 ## Install
-`pip install bdot`
+```bash
+pip install bdot
+```
 
 or build from source (requires bcolz >= 0.9.0)
 
-```python
+```bash
 python setup.py build_ext --inplace
 python setup.py install
 ```
