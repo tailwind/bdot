@@ -59,6 +59,19 @@ def test_dot_float32():
 
 	assert_array_almost_equal(expected, result, decimal=5)
 
+def test_dot_matrix_int64():
+
+
+	matrix = np.random.random_integers(0, 120, size=(1000, 100))
+	bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+	bcarray2 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+
+
+	result = bcarray1.dot(bcarray2)
+	expected = matrix.dot(matrix.T)
+
+	assert_array_equal(expected, result)
+
 @raises(ValueError)
 def test_dot_incompatible_dtype():
 

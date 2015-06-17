@@ -14,7 +14,11 @@ class carray(bcolz.carray):
 			raise ValueError("inputs must have the same dtype. Found {0} and {1}".format(self.dtype, matrix.dtype))
 
 		# check shape
-		if not self.shape[1] == matrix.shape[0]:
+		if( (self.shape[1] != matrix.shape[0]) and 
+			(type(matrix) == carray) and (self.shape[1] != matrix.shape[1])):
 			raise ValueError("inputs must have compatible shapes. Found {0} and {1}".format(self.shape, matrix.shape))
 
-		return carray_ext._dot(self, matrix)
+		if type(matrix) == np.ndarray:
+			return carray_ext._dot(self, matrix)
+		else:
+			return carray_ext._dot_int64(self, matrix)
