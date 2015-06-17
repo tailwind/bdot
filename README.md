@@ -7,7 +7,6 @@ you also get (mostly) transparant compressed disk based storage for free.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
 
-Only `matrix . vector` (nearest-neighbor-search style) dot products are supported, right now.
 
 ## Install
 `pip install bdot`
@@ -21,6 +20,8 @@ python setup.py install
 
 ## Usage
 
+### Matrix . Vector
+
 ```python
 import bdot
 import bcolz
@@ -33,6 +34,27 @@ v = bcarray[0]
 
 result = bcarray.dot(v)
 expected = matrix.dot(v)
+
+# should return True
+(expected == result).all()
+
+```
+
+### Matrix . Matrix
+
+```python
+
+import bdot
+import bcolz
+import numpy as np
+
+matrix = np.random.random_integers(0, 120, size=(1000, 100))
+bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+bcarray2 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+
+
+result = bcarray1.dot(bcarray2)
+expected = matrix.dot(matrix.T)
 
 # should return True
 (expected == result).all()
