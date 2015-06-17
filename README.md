@@ -22,6 +22,8 @@ python setup.py install
 
 ### Matrix . Vector
 
+Multiply a matrix (stored in a `carray`) with a vector (`numpy.ndarray`)
+
 ```python
 import bdot
 import bcolz
@@ -42,6 +44,8 @@ expected = matrix.dot(v)
 
 ### Matrix . Matrix
 
+Multiply a matrix (stored in a `carray`) with the transpose of another matrix (also in a `carray`).
+
 ```python
 
 import bdot
@@ -52,7 +56,7 @@ matrix = np.random.random_integers(0, 120, size=(1000, 100))
 bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
 bcarray2 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
 
-
+# calculates bcarray1 x bcarray2.T (transpose)
 result = bcarray1.dot(bcarray2)
 expected = matrix.dot(matrix.T)
 
