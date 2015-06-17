@@ -21,4 +21,4 @@ class carray(bcolz.carray):
 		if type(matrix) == np.ndarray:
 			return carray_ext._dot(self, matrix)
 		else:
-			return carray_ext._dot_int64(self, matrix)
+			return carray_ext._dot_mat(self, matrix, matrix[0])

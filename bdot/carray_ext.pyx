@@ -2,6 +2,7 @@ import numpy as np
 cimport numpy as np
 
 import cython
+cimport cython
 import bcolz as bz
 from bcolz.carray_ext cimport carray, chunk
 
@@ -86,7 +87,7 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector):
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cpdef _dot_int64(carray m1, carray m2):
+cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] type_indicator):
 	'''
 		Calculate matrix multiply between bcolz.carray matrix and transpose of
 		a second bcolz.carray matrix.
@@ -99,6 +100,7 @@ cpdef _dot_int64(carray m1, carray m2):
 		Arguments:
 			m1 (carray): two dimensional matrix in a bcolz.carray, row vector format
 			m2 (carray): two dimensional matrix in a bcolz.carray, row vector format
+			type_indicator(ndarray) : hack to allow use of fused types (just pass in the first row)
 		
 		Returns:
 			carray: result of matrix multiply between m1 and m2.T, matrix with dimensions equal to 
@@ -106,18 +108,15 @@ cpdef _dot_int64(carray m1, carray m2):
 
 	'''
 
-#	if m1.dtype.type is np.int64:
-#	dtype = np.int64_t
-	p_dtype = np.int64
-	#elif m1.dtype.type is np.int32:
-	#	dtype = np.int32_t
-	#	p_dtype = np.int32
-	#elif m1.dtype.type is np.float64:
-	#	dtype = np.float64_t
-	#	p_dtype = np.float64
-	#else:
-	#	dtype = np.float32_t
-	#	p_dtype = np.float32
+	# fused type conversion
+	if numpy_native_number is np.int64_t:
+		p_dtype = np.int64
+	elif numpy_native_number is np.int32_t:
+		p_dtype = np.int32
+	elif numpy_native_number is np.float64_t:
+		p_dtype = np.float64
+	else:
+		p_dtype = np.float32
 
 	cdef Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
 	cdef Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
@@ -127,13 +126,13 @@ cpdef _dot_int64(carray m1, carray m2):
 	chunk_len_j = m1.chunklen
 
 
-	cdef np.ndarray[np.int64_t, ndim=2] m_i = np.empty((chunk_len_i, m2.shape[1]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] m_i = np.empty((chunk_len_i, m2.shape[1]), dtype=p_dtype)
 
-	cdef np.ndarray[np.int64_t, ndim=2] m_j = np.empty((chunk_len_j, m1.shape[1]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] m_j = np.empty((chunk_len_j, m1.shape[1]), dtype=p_dtype)
 
-	cdef np.ndarray[np.int64_t, ndim=2] dot_k = np.empty((chunk_len_i, chunk_len_j), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] dot_k = np.empty((chunk_len_i, chunk_len_j), dtype=p_dtype)
 
-	cdef np.ndarray[np.int64_t, ndim=2] result = np.empty((m1.shape[0], m2.shape[0]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] result = np.empty((m1.shape[0], m2.shape[0]), dtype=p_dtype)
 
 	cdef chunk chunk_i_
 	cdef chunk chunk_j_
