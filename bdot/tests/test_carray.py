@@ -82,7 +82,7 @@ def test_dot_incompatible_dtype():
 
 	result = bcarray.dot(v)
 
-
+'''
 @raises(ValueError)
 def test_dot_incompatible_shapes():
 
@@ -91,3 +91,4 @@ def test_dot_incompatible_shapes():
 
 
 	result = bcarray.dot(matrix)
+'''

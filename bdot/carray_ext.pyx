@@ -163,10 +163,10 @@ cpdef _dot_int64(carray m1, carray m2):
 			chunk_start_i = i * chunk_len_i
 			chunk_start_j = j * chunk_len_j
 			for k in range(chunk_len_i):
+				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(chunk_len_j):
-					result_k = <unsigned int> (chunk_start_i + k)
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l][result_k] = dot_k[l][k]
+					result[result_l, result_k] = dot_k[l, k]
 
 		# do last chunk in first array
 		if leftover_len_j > 0:
@@ -175,10 +175,10 @@ cpdef _dot_int64(carray m1, carray m2):
 			chunk_start_i = i * chunk_len_i
 			chunk_start_j = (j + 1) * chunk_len_j
 			for k in range(chunk_len_i):
+				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(leftover_len_j):
-					result_k = <unsigned int> (chunk_start_i + k)
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l][result_k] = dot_k[l][k]
+					result[result_l, result_k] = dot_k[l, k]
 
 
 	# do last chunk in second array
@@ -196,10 +196,10 @@ cpdef _dot_int64(carray m1, carray m2):
 			chunk_start_i = (i + 1) * chunk_len_i
 			chunk_start_j = j * chunk_len_j
 			for k in range(leftover_len_i):
+				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(chunk_len_j):
-					result_k = <unsigned int> (chunk_start_i + k)
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l][result_k] = dot_k[l][k]
+					result[result_l, result_k] = dot_k[l, k]
 
 
 		# do last chunk in first array
@@ -209,10 +209,10 @@ cpdef _dot_int64(carray m1, carray m2):
 			chunk_start_i = (i + 1) * chunk_len_i
 			chunk_start_j = (j + 1) * chunk_len_j
 			for k in range(leftover_len_i):
+				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(leftover_len_j):
-					result_k = <unsigned int> (chunk_start_i + k)
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l][result_k] = dot_k[l][k]
+					result[result_l, result_k] = dot_k[l, k]
 
 
 	return result
