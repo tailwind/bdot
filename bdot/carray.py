@@ -7,7 +7,7 @@ import bcolz
 
 class carray(bcolz.carray):
 
-	def dot(self, matrix):
+	def dot(self, matrix, rootdir=None):
 
 		# check dtype compatibility
 		if self.dtype.type != matrix.dtype.type:
@@ -21,4 +21,4 @@ class carray(bcolz.carray):
 		if type(matrix) == np.ndarray:
 			return carray_ext._dot(self, matrix)
 		else:
-			return carray_ext._dot_mat_carray(self, matrix, matrix[0])
+			return carray_ext._dot_mat_carray(self, matrix, matrix[0], rootdir)

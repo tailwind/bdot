@@ -219,13 +219,11 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] type_indicator):
+cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] type_indicator, str root_dir):
 	'''
 		Calculate matrix multiply between bcolz.carray matrix and transpose of
 		a second bcolz.carray matrix.
 		Second dimension of m1 must match second dimension of m2.
-		
-		Requires that resulting matrix fit in RAM.
 
 		Requires that chunks and matrix multiply of chunks fit in RAM.
 
@@ -268,7 +266,7 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 
 	cdef np.ndarray[numpy_native_number, ndim=2] result_template = np.empty((0, m2.shape[0]), dtype=p_dtype)
 
-	cdef carray c_result = bdot.carray(result_template, expectedlen=m1.shape[0], cparams=m1.cparams) # m1.shape[0] x m2.shape[0]
+	cdef carray c_result = bdot.carray(result_template, expectedlen=m1.shape[0], cparams=m1.cparams, rootdir=root_dir) # m1.shape[0] x m2.shape[0]
 
 	cdef chunk chunk_i_
 	cdef chunk chunk_j_
