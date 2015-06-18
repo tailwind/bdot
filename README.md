@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/pinleague/bdot.svg)](https://travis-ci.org/pinleague/bdot)
 
 Bdot makes your ram bigger on the inside. Since it's based on [Bcolz](https://github.com/Blosc/bcolz/)
-you also get (mostly) transparant compressed disk based storage for free.
+you also get transparent disk-based storage, for free.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
 
