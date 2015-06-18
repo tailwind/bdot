@@ -121,14 +121,14 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 	cdef Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
 	cdef Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
 
-	# iterate through m2 in outer loop, to facilitate later chunking into output carray
-	chunk_len_i = m2.chunklen
-	chunk_len_j = m1.chunklen
+	# iterate through m1 in outer loop, to facilitate later chunking into output carray
+	chunk_len_i = m1.chunklen
+	chunk_len_j = m2.chunklen
 
 
-	cdef np.ndarray[numpy_native_number, ndim=2] m_i = np.empty((chunk_len_i, m2.shape[1]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] m_i = np.empty((chunk_len_i, m1.shape[1]), dtype=p_dtype)
 
-	cdef np.ndarray[numpy_native_number, ndim=2] m_j = np.empty((chunk_len_j, m1.shape[1]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] m_j = np.empty((chunk_len_j, m2.shape[1]), dtype=p_dtype)
 
 	cdef np.ndarray[numpy_native_number, ndim=2] dot_k = np.empty((chunk_len_i, chunk_len_j), dtype=p_dtype)
 
@@ -141,22 +141,22 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 	cdef unsigned int result_l, l
 
 
-	leftover_len_i = cython.cdiv(m2.leftover, m2.atomsize)
-	leftover_len_j = cython.cdiv(m1.leftover, m1.atomsize)
+	leftover_len_i = cython.cdiv(m1.leftover, m1.atomsize)
+	leftover_len_j = cython.cdiv(m2.leftover, m2.atomsize)
 
 
-	for i in range(m2.nchunks):
+	for i in range(m1.nchunks):
 
-		chunk_i_ = m2.chunks[i]
+		chunk_i_ = m1.chunks[i]
 		chunk_i_._getitem(0, chunk_len_i, m_i.data)
 
 
-		for j in range(m1.nchunks):
-			chunk_j_ = m1.chunks[j]
+		for j in range(m2.nchunks):
+			chunk_j_ = m2.chunks[j]
 
 			chunk_j_._getitem(0, chunk_len_j, m_j.data)
 
-			dot_k = np.dot(m_j, m_i.T)
+			dot_k = np.dot(m_i, m_j.T)
 
 			# copy to result
 			chunk_start_i = i * chunk_len_i
@@ -165,11 +165,11 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(chunk_len_j):
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l, result_k] = dot_k[l, k]
+					result[result_k, result_l] = dot_k[k, l]
 
 		# do last chunk in first array
 		if leftover_len_j > 0:
-			dot_k = np.dot(m1.leftover_array, m_i.T)
+			dot_k = np.dot(m_i, m2.leftover_array.T)
 
 			chunk_start_i = i * chunk_len_i
 			chunk_start_j = (j + 1) * chunk_len_j
@@ -177,19 +177,19 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(leftover_len_j):
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l, result_k] = dot_k[l, k]
+					result[result_k, result_l] = dot_k[k, l]
 
 
 	# do last chunk in second array
 	if leftover_len_i > 0:
 
-		for j in range(m1.nchunks):
+		for j in range(m2.nchunks):
 
-			chunk_j_ = m1.chunks[j]
+			chunk_j_ = m2.chunks[j]
 
 			chunk_j_._getitem(0, chunk_len_j, m_j.data)
 
-			dot_k = np.dot(m_j, m2.leftover_array.T)
+			dot_k = np.dot(m1.leftover_array, m_j.T)
 
 			# copy to result
 			chunk_start_i = (i + 1) * chunk_len_i
@@ -198,7 +198,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(chunk_len_j):
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l, result_k] = dot_k[l, k]
+					result[result_k, result_l] = dot_k[k, l]
 
 
 		# do last chunk in first array
@@ -211,7 +211,8 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(leftover_len_j):
 					result_l = <unsigned int> (chunk_start_j + l)
-					result[result_l, result_k] = dot_k[l, k]
+					result[result_k, result_l] = dot_k[k, l]
 
 
 	return result
+
