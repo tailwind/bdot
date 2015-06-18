@@ -85,17 +85,19 @@ compression ratio: 3.55
 compression ratio on real world (non-random) data tends to be better (~5x)
 
 ### Time
+`numpy`
+```python
+%timeit -n30 -r2 matrix.dot(v)
+
+30 loops, best of 2: 33 ms per loop
+```
+`bdot`
 ```python
 %timeit -n30 -r2 bcarray.dot(v)
 
 30 loops, best of 2: 48.2 ms per loop
 ```
 
-```python
-%timeit -n30 -r2 matrix.dot(v)
-
-30 loops, best of 2: 33 ms per loop
-```
 
 ## Goals
 
