@@ -4,6 +4,7 @@ cimport numpy as np
 import cython
 cimport cython
 import bcolz as bz
+import bdot
 from bcolz.carray_ext cimport carray, chunk
 
 
@@ -215,4 +216,139 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 
 
 	return result
+
+@cython.wraparound(False)
+@cython.boundscheck(False)
+cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] type_indicator):
+	'''
+		Calculate matrix multiply between bcolz.carray matrix and transpose of
+		a second bcolz.carray matrix.
+		Second dimension of m1 must match second dimension of m2.
+		
+		Requires that resulting matrix fit in RAM.
+
+		Requires that chunks and matrix multiply of chunks fit in RAM.
+
+		Arguments:
+			m1 (carray): two dimensional matrix in a bcolz.carray, row vector format
+			m2 (carray): two dimensional matrix in a bcolz.carray, row vector format
+			type_indicator(ndarray) : hack to allow use of fused types (just pass in the first row)
+		
+		Returns:
+			carray: result of matrix multiply between m1 and m2.T, matrix with dimensions equal to 
+			first dimension of m1 by first dimension of m2
+
+	'''
+
+	# fused type conversion
+	if numpy_native_number is np.int64_t:
+		p_dtype = np.int64
+	elif numpy_native_number is np.int32_t:
+		p_dtype = np.int32
+	elif numpy_native_number is np.float64_t:
+		p_dtype = np.float64
+	else:
+		p_dtype = np.float32
+
+	cdef Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
+	cdef Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
+
+	# iterate through m1 in outer loop, to facilitate later chunking into output carray
+	chunk_len_i = m1.chunklen
+	chunk_len_j = m2.chunklen
+
+
+	cdef np.ndarray[numpy_native_number, ndim=2] m_i = np.empty((chunk_len_i, m1.shape[1]), dtype=p_dtype)
+
+	cdef np.ndarray[numpy_native_number, ndim=2] m_j = np.empty((chunk_len_j, m2.shape[1]), dtype=p_dtype)
+
+	cdef np.ndarray[numpy_native_number, ndim=2] dot_k = np.empty((chunk_len_i, chunk_len_j), dtype=p_dtype)
+
+	cdef np.ndarray[numpy_native_number, ndim=2] result_i = np.empty((chunk_len_i, m2.shape[0]), dtype=p_dtype)
+
+	cdef np.ndarray[numpy_native_number, ndim=2] result_template = np.empty((0, m2.shape[0]), dtype=p_dtype)
+
+	cdef carray c_result = bdot.carray(result_template, expectedlen=m1.shape[0], cparams=m1.cparams) # m1.shape[0] x m2.shape[0]
+
+	cdef chunk chunk_i_
+	cdef chunk chunk_j_
+
+	cdef unsigned int result_k, k
+	cdef unsigned int result_l, l
+
+
+	leftover_len_i = cython.cdiv(m1.leftover, m1.atomsize)
+	leftover_len_j = cython.cdiv(m2.leftover, m2.atomsize)
+
+
+	for i in range(m1.nchunks):
+
+		chunk_i_ = m1.chunks[i]
+		chunk_i_._getitem(0, chunk_len_i, m_i.data)
+
+		chunk_start_i = i * chunk_len_i
+
+		for j in range(m2.nchunks):
+			chunk_j_ = m2.chunks[j]
+
+			chunk_j_._getitem(0, chunk_len_j, m_j.data)
+
+			dot_k = np.dot(m_i, m_j.T)
+
+			# copy to result
+			chunk_start_j = j * chunk_len_j
+			for k in range(chunk_len_i):
+				for l in range(chunk_len_j):
+					result_l = <unsigned int> (chunk_start_j + l)
+					result_i[k, result_l] = dot_k[k, l]
+
+		# do last chunk in second array
+		if leftover_len_j > 0:
+			dot_k = np.dot(m_i, m2.leftover_array.T)
+
+			chunk_start_j = (j + 1) * chunk_len_j
+			for k in range(chunk_len_i):
+				for l in range(leftover_len_j):
+					result_l = <unsigned int> (chunk_start_j + l)
+					result_i[k, result_l] = dot_k[k, l]
+
+		#write new chunk to result carray
+		c_result.append(result_i) # fill_chunks(self, object array_)
+
+
+	# do last chunk in first array
+	if leftover_len_i > 0:
+
+		for j in range(m2.nchunks):
+
+			chunk_j_ = m2.chunks[j]
+
+			chunk_j_._getitem(0, chunk_len_j, m_j.data)
+
+			dot_k = np.dot(m1.leftover_array, m_j.T)
+
+			# copy to result
+			chunk_start_i = (i + 1) * chunk_len_i
+			chunk_start_j = j * chunk_len_j
+			for k in range(leftover_len_i):
+				for l in range(chunk_len_j):
+					result_l = <unsigned int> (chunk_start_j + l)
+					result_i[k, result_l] = dot_k[k, l]
+
+
+		# do last chunk in both arrays
+		if leftover_len_j > 0:
+			dot_k = np.dot(m1.leftover_array, m2.leftover_array.T)
+
+			chunk_start_i = (i + 1) * chunk_len_i
+			chunk_start_j = (j + 1) * chunk_len_j
+			for k in range(leftover_len_i):
+				for l in range(leftover_len_j):
+					result_l = <unsigned int> (chunk_start_j + l)
+					result_i[k, result_l] = dot_k[k, l]
+
+		#write new chunk to result carray
+		c_result.append(result_i[:leftover_len_i]) # fill_chunks(self, object array_)
+
+	return c_result
 

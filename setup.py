@@ -74,7 +74,7 @@ setup(
                     sources=sources_carray)
           ],
     packages=['bdot', 'bdot.tests'],
-    data_files=[('..' , ['VERSION'])],
+    data_files=[('.' , ['VERSION'])],
     install_requires=['cython>=0.20', 'numpy>=1.7.0', 'bcolz>=0.9.0'],
     license='MIT',
     classifiers=[
