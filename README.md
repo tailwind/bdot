@@ -8,6 +8,7 @@ you also get (mostly) transparant compressed disk based storage for free.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
 
+
 Supports `matrix . vector` and `matrix . matrix` for most common numpy numeric data types (`numpy.int64`, `numpy.int32`, `numpy.float64`, `numpy.float32`)
 
 ## Install
@@ -118,3 +119,5 @@ So far, the first goal has been met.
 ## Acknowledgements
 
 This library wouldn't be possible without all the talented people who worked hard to create [Bcolz](https://github.com/Blosc/bcolz/) (and the libraries on which it's based). Initial code was also heavily influenced by [Bquery](https://github.com/visualfabriq/bquery).
+
+Awesome TARDIS can be found [here](https://youtu.be/dUBxHd3bMhg?t=1m3s)
