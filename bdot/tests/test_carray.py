@@ -71,6 +71,33 @@ def test_dot_matrix_int64():
 	assert_array_equal(expected, result)
 
 
+def test_dot_matrix_int64_unequal_chunklen():
+
+	matrix1 = np.random.random_integers(0, 120, size=(1000, 100))
+	bcarray1 = bdot.carray(matrix1, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+	matrix2 = np.random.random_integers(0, 120, size=(1000, 100))
+	bcarray2 = bdot.carray(matrix2, chunklen=2**8, cparams=bcolz.cparams(clevel=2))
+
+
+	result = bcarray1.dot(bcarray2)
+	expected = matrix1.dot(matrix2.T)
+
+	assert_array_equal(expected, result)
+
+
+def test_dot_matrix_int64_unequal_length():
+
+	matrix1 = np.random.random_integers(0, 120, size=(1000, 100))
+	bcarray1 = bdot.carray(matrix1, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+	matrix2 = np.random.random_integers(0, 120, size=(10000, 100))
+	bcarray2 = bdot.carray(matrix2, chunklen=2**10, cparams=bcolz.cparams(clevel=2))
+
+
+	result = bcarray1.dot(bcarray2)
+	expected = matrix1.dot(matrix2.T)
+
+	assert_array_equal(expected, result)
+
 def test_dot_matrix_int32():
 
 	matrix = np.random.random_integers(0, 120, size=(1000, 100)).astype('int32')
