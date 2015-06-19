@@ -1,10 +1,9 @@
 # Bdot
-## Fast Dot Products on Pretty Big Data
+## Fast Matrix Multiply on Pretty Big Data
 
 [![Build Status](https://travis-ci.org/pinleague/bdot.svg)](https://travis-ci.org/pinleague/bdot)
 
-Bdot makes your ram bigger on the inside. Since it's based on [Bcolz](https://github.com/Blosc/bcolz/)
-you also get transparent disk-based storage, for free.
+Bdot does big dot products (by making your RAM bigger on the inside). It's based on [Bcolz](https://github.com/Blosc/bcolz/) and includes transparent disk-based storage.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
 
@@ -73,7 +72,10 @@ expected = matrix.dot(matrix.T)
 Save really big results directly to disk. Only for `matrix . matrix`. Syntax will likely change in the future.
 
 ```python
+# generate results directly on disk
 result = bcarray1.dot(bcarray2, rootdir='/path/to/bcolz/output')
+# make sure the last bits get written
+result.flush()
 ```
 
 ## Test
