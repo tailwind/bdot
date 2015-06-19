@@ -30,11 +30,10 @@ Multiply a matrix (`carray`) with a vector (`numpy.ndarray`), returns a vector (
 
 ```python
 import bdot
-import bcolz
 import numpy as np
 
 matrix = np.random.random_integers(0, 12000, size=(300000, 100))
-bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
+bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bdot.cparams(clevel=2))
 
 v = bcarray[0]
 
@@ -51,14 +50,12 @@ expected = matrix.dot(v)
 Multiply a matrix (`carray`) with the transpose of a matrix (`carray`), returns a matrix (`carray`)
 
 ```python
-
 import bdot
-import bcolz
 import numpy as np
 
 matrix = np.random.random_integers(0, 120, size=(1000, 100))
-bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
-bcarray2 = bdot.carray(matrix, chunklen=2**9, cparams=bcolz.cparams(clevel=2))
+bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bdot.cparams(clevel=2))
+bcarray2 = bdot.carray(matrix, chunklen=2**9, cparams=bdot.cparams(clevel=2))
 
 # calculates bcarray1 . bcarray2.T (transpose)
 result = bcarray1.dot(bcarray2)
