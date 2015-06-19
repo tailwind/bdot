@@ -16,7 +16,7 @@ class carray(bcolz.carray):
 			raised.
 
 			if you want to use the out parameter, but aren't sure how, use
-			`bdot.carray.dot_out()`
+			`bdot.carray.empty_dot()`
 
 		Arguments:
 			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format or
