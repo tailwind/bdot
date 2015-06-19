@@ -69,6 +69,12 @@ expected = matrix.dot(matrix.T)
 (expected == result).all()
 
 ```
+#### Save Result to Disk (Experimental)
+Save really big results directly to disk. Only for `matrix . matrix`. Syntax will likely change in the future.
+
+```python
+result = bcarray1.dot(bcarray2, rootdir='/path/to/bcolz/output')
+```
 
 ## Test
 
