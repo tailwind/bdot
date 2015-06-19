@@ -326,7 +326,7 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 
 	cdef np.ndarray[numpy_native_number, ndim=2] result_i = np.empty((chunk_len_i, m2.shape[0]), dtype=p_dtype)
 
-	cdef np.ndarray[numpy_native_number, ndim=2] result_template = np.empty((0, m2.shape[0]), dtype=p_dtype)
+	cdef np.ndarray[numpy_native_number, ndim=2] result_template = np.ndarray((0, m2.shape[0]), dtype=p_dtype)
 
 	cdef carray c_result = bdot.carray(result_template, expectedlen=m1.shape[0], cparams=m1.cparams, rootdir=root_dir) # m1.shape[0] x m2.shape[0]
 
