@@ -6,6 +6,7 @@ import bcolz
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
+# ndarray
 def test_dot_int64():
 
 	matrix = np.random.random_integers(0, 12000, size=(10000, 100))
@@ -57,7 +58,21 @@ def test_dot_float32():
 
 	assert_array_almost_equal(expected, result, decimal=5)
 
+# 1-D carray
 
+def test_dot_matrix_1_int64():
+
+	matrix = np.random.random_integers(0, 120, size=(10000, 100))
+	bcarray = bdot.carray(matrix, chunklen=2**13, cparams=bcolz.cparams(clevel=2))
+
+	v = bcarray[0]
+
+	result = bcarray.dot(v, output='carray')
+	expected = matrix.dot(v)
+
+	assert_array_equal(expected, result)
+
+# carray
 def test_dot_matrix_int64():
 
 	matrix = np.random.random_integers(0, 120, size=(1000, 100))

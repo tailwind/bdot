@@ -88,6 +88,68 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector):
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
+cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, str root_dir):
+	'''
+		Calculate dot product between a bcolz.carray matrix and a numpy vector, storing the results
+		in a carray.
+		Second dimension of matrix must match first dimension of vector.
+		
+		Arguments:
+			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format
+			vector (ndarray): one dimensional vector in a numpy array
+		
+		Returns:
+			ndarray: result of dot product, one value per row in orginal matrix
+	'''
+
+	# fused type conversion
+	if numpy_native_number is np.int64_t:
+		p_dtype = np.int64
+	elif numpy_native_number is np.int32_t:
+		p_dtype = np.int32
+	elif numpy_native_number is np.float64_t:
+		p_dtype = np.float64
+	else:
+		p_dtype = np.float32
+
+	cdef Py_ssize_t i, chunk_start, chunk_len, leftover_len
+
+	chunk_len = matrix.chunklen
+
+	cdef np.ndarray[numpy_native_number] dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
+
+	cdef np.ndarray[numpy_native_number, ndim=2] m_i = np.empty((matrix.chunklen, matrix.shape[1]), dtype=p_dtype)
+
+	cdef np.ndarray[numpy_native_number, ndim=1] result_template = np.ndarray(shape=(0), dtype=p_dtype)
+
+	cdef carray c_result = bdot.carray(result_template, expectedlen=matrix.shape[0], cparams=matrix.cparams, rootdir=root_dir) # m1.shape[0] x m2.shape[0]
+
+
+	cdef chunk chunk_
+
+
+	leftover_len = cython.cdiv(matrix.leftover, matrix.atomsize)
+
+
+	for i in range(matrix.nchunks):
+		chunk_ = matrix.chunks[i]
+
+		chunk_._getitem(0, chunk_len, m_i.data)
+		dot_i = np.dot(m_i, vector)
+
+		#write new chunk to result carray
+		c_result.append(dot_i)
+
+	if leftover_len > 0:
+		dot_i = np.dot(matrix.leftover_array, vector)
+
+		#write new chunk to result carray
+		c_result.append(dot_i[:leftover_len])
+
+	return c_result
+
+@cython.wraparound(False)
+@cython.boundscheck(False)
 cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] type_indicator):
 	'''
 		Calculate matrix multiply between bcolz.carray matrix and transpose of
