@@ -61,7 +61,7 @@ class carray(bcolz.carray):
 
 			# create output container, or check existing one
 			if out == None:
-				out = self.dot_out(matrix)
+				out = self.empty_dot(matrix)
 			else:
 				assert isinstance(out, bcolz.carray)
 				assert len(out.shape) == 2
@@ -73,27 +73,30 @@ class carray(bcolz.carray):
 
 			return out
 
-	def dot_out(self, matrix, rootdir=None):
+	def empty_dot(self, matrix, cparams=None, rootdir=None):
 		'''
 		Create en empty bdot.carray in the shape required for the multiplication of this
 		carray with the given object, optionally saving it to disk (if the rootdir parameter
-			is specified).
+		is specified). Allows you to easily create carrays for use with the out parameter of
+		the dot method.
+
+		This is a very cheap operation.
 		'''
 		if type(matrix) == np.ndarray:
 
 			assert len(matrix.shape) == 1
 
-			return self.empty_like(shape=(self.shape[0],), rootdir=rootdir)
+			return self.empty_like(shape=(self.shape[0],), cparams=cparams, rootdir=rootdir)
 
 		elif isinstance(matrix, bcolz.carray):
 
 			assert len(matrix.shape) == 2
 
-			return self.empty_like(shape=(self.shape[0], matrix.shape[0]), rootdir=rootdir)
+			return self.empty_like(shape=(self.shape[0], matrix.shape[0]), cparams=cparams, rootdir=rootdir)
 
 
 
-	def empty_like(self, shape=None, rootdir=None):
+	def empty_like(self, shape=None, cparams=None, rootdir=None):
 		'''
 		Create an empty bdot.carray container matching this one
 		'''
@@ -101,17 +104,19 @@ class carray(bcolz.carray):
 		p_dtype = self.dtype
 		if shape == None:
 			shape = self.shape
+		if cparams == None:
+			cparams = self.cparams
 
 		if(len(shape) == 1):
 
 			result_template = np.ndarray(shape=(0), dtype=p_dtype)
-			return bdot.carray(result_template, expectedlen=shape[0], cparams=self.cparams, rootdir=rootdir)
+			return bdot.carray(result_template, expectedlen=shape[0], cparams=cparams, rootdir=rootdir)
 
 
 		elif(len(self.shape) == 2):
 
 			result_template = np.ndarray((0, shape[1]), dtype=p_dtype)
-			return bdot.carray(result_template, expectedlen=shape[0], cparams=self.cparams, rootdir=rootdir)
+			return bdot.carray(result_template, expectedlen=shape[0], cparams=cparams, rootdir=rootdir)
 
 
 		else:

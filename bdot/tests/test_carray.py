@@ -67,7 +67,7 @@ def test_dot_matrix_1_int64():
 
 	v = bcarray[0]
 
-	output = bcarray.dot_out(v)
+	output = bcarray.empty_dot(v)
 
 	result = bcarray.dot(v, out=output)
 	expected = matrix.dot(v)

@@ -73,7 +73,7 @@ Save really big results directly to disk
 
 ```python
 # create correctly sized container (helper method, not required)
-output = bcarray1.dot_out(bcarray2, rootdir='/path/to/bcolz/output')
+output = bcarray1.empty_dot(bcarray2, rootdir='/path/to/bcolz/output')
 
 # generate results directly on disk
 bcarray1.dot(bcarray2, out=output)
@@ -82,7 +82,7 @@ bcarray1.dot(bcarray2, out=output)
 output.flush()
 ```
 
-This method can also be used to get `carray` output for `ndarray` vector input, just leave off the `rootdir` parameter in `dot_out`, or create your own `carray` container.
+This method can also be used to get `carray` output for `ndarray` vector input, just leave off the `rootdir` parameter in `empty_dot`, or create your own `carray` container.
  
 ## Test
 
