@@ -15,11 +15,13 @@ class carray(bcolz.carray):
 			match the output which would be constructed exactly, or an error will be
 			raised.
 
-			if you want to use the out parameter, but aren't sure how, call
-			`bdot.carray.empty_like()` on the first matrix.
+			if you want to use the out parameter, but aren't sure how, use
+			`bdot.carray.dot_out()`
 
 		Arguments:
-			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format
+			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format or
+			a one dimensional numpy.ndarray
+
 			out: named parameter to be used as output
 		'''
 
@@ -74,7 +76,8 @@ class carray(bcolz.carray):
 	def dot_out(self, matrix, rootdir=None):
 		'''
 		Create en empty bdot.carray in the shape required for the multiplication of this
-		carray with the given object, optionally saving it to disk
+		carray with the given object, optionally saving it to disk (if the rootdir parameter
+			is specified).
 		'''
 		if type(matrix) == np.ndarray:
 
@@ -92,7 +95,7 @@ class carray(bcolz.carray):
 
 	def empty_like(self, shape=None, rootdir=None):
 		'''
-		Create an empty bdot.carray container matching this one, with an optional
+		Create an empty bdot.carray container matching this one
 		'''
 
 		p_dtype = self.dtype
