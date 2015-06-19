@@ -67,7 +67,9 @@ def test_dot_matrix_1_int64():
 
 	v = bcarray[0]
 
-	result = bcarray.dot(v, output='carray')
+	output = bcarray.dot_out(v)
+
+	result = bcarray.dot(v, out=output)
 	expected = matrix.dot(v)
 
 	assert_array_equal(expected, result)

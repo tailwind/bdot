@@ -1,13 +1,27 @@
 # internal imports
 from bdot import carray_ext
 
+import bdot
+
 # external imports
 import numpy as np
 import bcolz
 
 class carray(bcolz.carray):
 
-	def dot(self, matrix, output='ndarray', rootdir=None):
+	def dot(self, matrix, out=None):
+		'''
+			Dot product of two arrays, with bcolz.carray support. If out is provided it must
+			match the output which would be constructed exactly, or an error will be
+			raised.
+
+			if you want to use the out parameter, but aren't sure how, call
+			`bdot.carray.empty_like()` on the first matrix.
+
+		Arguments:
+			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format
+			out: named parameter to be used as output
+		'''
 
 		# check dtype compatibility
 		if self.dtype.type != matrix.dtype.type:
@@ -19,12 +33,79 @@ class carray(bcolz.carray):
 			raise ValueError("inputs must have compatible shapes. Found {0} and {1}".format(self.shape, matrix.shape))
 
 		if type(matrix) == np.ndarray:
-			if rootdir == None and output != 'carray':
-				# output ndarray
-				return carray_ext._dot(self, matrix)
+
+			assert len(matrix.shape) == 1
+
+			# create output container, or check existing one
+			if out == None:
+				out =  np.empty(self.shape[0], dtype=self.dtype)
+			else:
+				assert len(out.shape) == 1
+
+			if type(out) == np.ndarray:
+				assert out.shape[0] == self.shape[0]
+				return carray_ext._dot(self, matrix, out)
 			else:
 				# output carray
-				return carray_ext._dot_carray(self, matrix, rootdir)
+				assert isinstance(out, bcolz.carray)
+
+				return carray_ext._dot_carray(self, matrix, out)
 		else:
-				# output carray
-			return carray_ext._dot_mat_carray(self, matrix, matrix[0], rootdir)
+
+			assert len(matrix.shape) == 2
+
+			# create output container, or check existing one
+			if out == None:
+				out = self.dot_out(matrix)
+			else:
+				assert isinstance(out, bcolz.carray)
+				assert len(out.shape) == 2
+				assert out.shape[0] == self.shape[0]
+				assert out.shape[1] == matrix.shape[0]
+
+			# output carray
+			return carray_ext._dot_mat_carray(self, matrix, matrix[0], out)
+
+	def dot_out(self, matrix, rootdir=None):
+		'''
+		Create en empty bdot.carray in the shape required for the multiplication of this
+		carray with the given object, optionally saving it to disk
+		'''
+		if type(matrix) == np.ndarray:
+
+			assert len(matrix.shape) == 1
+
+			return self.empty_like(shape=(self.shape[0],), rootdir=rootdir)
+
+		elif isinstance(matrix, bcolz.carray):
+
+			assert len(matrix.shape) == 2
+
+			return self.empty_like(shape=(self.shape[0], matrix.shape[0]), rootdir=rootdir)
+
+
+
+	def empty_like(self, shape=None, rootdir=None):
+		'''
+		Create an empty bdot.carray container matching this one, with an optional
+		'''
+
+		p_dtype = self.dtype
+		if shape == None:
+			shape = self.shape
+
+		if(len(shape) == 1):
+
+			result_template = np.ndarray(shape=(0), dtype=p_dtype)
+			return bdot.carray(result_template, expectedlen=shape[0], cparams=self.cparams, rootdir=rootdir)
+
+
+		elif(len(self.shape) == 2):
+
+			result_template = np.ndarray((0, shape[1]), dtype=p_dtype)
+			return bdot.carray(result_template, expectedlen=shape[0], cparams=self.cparams, rootdir=rootdir)
+
+
+		else:
+			raise ValueError("Can't create a carray like that. Only one and two dimensions supported.")
+
