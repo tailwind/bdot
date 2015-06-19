@@ -68,16 +68,22 @@ expected = matrix.dot(matrix.T)
 (expected == result).all()
 
 ```
-#### Save Result to Disk (Experimental)
-Save really big results directly to disk. Only for `matrix . matrix`. Syntax will likely change in the future.
+### Save Result to Disk (Experimental)
+Save really big results directly to disk
 
 ```python
+# create correctly sized container (helper method, not required)
+output = bcarray1.dot_out(bcarray2, rootdir='/path/to/bcolz/output')
+
 # generate results directly on disk
-result = bcarray1.dot(bcarray2, rootdir='/path/to/bcolz/output')
+bcarray1.dot(bcarray2, out=output)
+
 # make sure the last bits get written
-result.flush()
+output.flush()
 ```
 
+This method can also be used to get `carray` output for `ndarray` vector input, just leave off the `rootdir` parameter in `dot_out`, or create your own `carray` container.
+ 
 ## Test
 
 ```python
