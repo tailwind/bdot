@@ -3,7 +3,6 @@ cimport numpy as np
 
 import cython
 cimport cython
-import bcolz as bz
 import bdot
 from bcolz.carray_ext cimport carray, chunk
 
