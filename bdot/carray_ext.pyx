@@ -82,9 +82,6 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, np.nda
 			result[result_j] = dot_i[j]
 
 
-	return result
-
-
 @cython.wraparound(False)
 @cython.boundscheck(False)
 cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, carray c_result):
@@ -141,7 +138,6 @@ cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector,
 		#write new chunk to result carray
 		c_result.append(dot_i[:leftover_len])
 
-	return c_result
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
@@ -271,8 +267,8 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 					result_l = <unsigned int> (chunk_start_j + l)
 					result[result_k, result_l] = dot_k[k, l]
 
-
 	return result
+
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
@@ -401,6 +397,4 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 
 		#write new chunk to result carray
 		c_result.append(result_i[:leftover_len_i]) # fill_chunks(self, object array_)
-
-	return c_result
 

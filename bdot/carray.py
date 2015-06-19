@@ -44,12 +44,15 @@ class carray(bcolz.carray):
 
 			if type(out) == np.ndarray:
 				assert out.shape[0] == self.shape[0]
-				return carray_ext._dot(self, matrix, out)
+				carray_ext._dot(self, matrix, out)
+
+				return out
 			else:
 				# output carray
 				assert isinstance(out, bcolz.carray)
 
-				return carray_ext._dot_carray(self, matrix, out)
+				carray_ext._dot_carray(self, matrix, out)
+				return out
 		else:
 
 			assert len(matrix.shape) == 2
@@ -64,7 +67,9 @@ class carray(bcolz.carray):
 				assert out.shape[1] == matrix.shape[0]
 
 			# output carray
-			return carray_ext._dot_mat_carray(self, matrix, matrix[0], out)
+			carray_ext._dot_mat_carray(self, matrix, matrix[0], out)
+
+			return out
 
 	def dot_out(self, matrix, rootdir=None):
 		'''
