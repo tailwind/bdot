@@ -63,8 +63,18 @@ inc_dirs.extend(get_numpy_include_dirs())
 setup(
     name = 'bdot',
     version = VERSION,
-    description = 'A fast dot product library built on Bcolz',
-    long_description= 'Bdot makes your RAM bigger on the inside. It leverages the compression and chunking capabilities of Bcolz to compute dot products on data sets that don\'t fit in RAM. It can also (optionally) persist data sets to disk. It was created, initially, for nearest neighbor search.',
+    description = 'Fast Matrix Multiply on Pretty Big Data (powered by Bcolz)',
+    long_description= '''
+Bdot does big dot products (by making your RAM bigger on the inside). 
+It aims to let you do all the things you wish you could do with numpy, 
+but don't have enough memory for (MemoryError? not anymore). You can also
+use it to save on cloud compute costs. 
+
+It's pretty math.
+
+Bdot is based on Bcolz and includes transparent disk-based storage. It was created 
+to simplify nearest neighbor search and other fancy machine learning rigmarole.
+    ''',
     url='https://github.com/pinleague/bdot',
     author='Waylon Flinn',
     cmdclass={'build_ext' : bdot_build_ext},
