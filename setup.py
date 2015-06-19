@@ -89,5 +89,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4'
     ],
-    keywords='dot product compression bcolz numpy'
+    keywords='dot product matrix multiply compression bcolz numpy'
 )
