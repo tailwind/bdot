@@ -60,11 +60,7 @@ from numpy.distutils.misc_util import get_numpy_include_dirs
 
 inc_dirs.extend(get_numpy_include_dirs())
 
-setup(
-    name = 'bdot',
-    version = VERSION,
-    description = 'Fast Matrix Multiply on Pretty Big Data (powered by Bcolz)',
-    long_description= '''
+long_desc = """
 Bdot does big dot products (by making your RAM bigger on the inside). 
 It aims to let you do all the things you want to do with numpy, 
 but don't have enough memory for. You can also use it to save space
@@ -75,8 +71,14 @@ It's pretty math.
 Bdot is based on Bcolz and includes transparent disk-based storage. It was created 
 to simplify production implementation of nearest neighbor search and other fancy 
 machine learning rigmarole.
-    ''',
-    url='https://github.com/pinleague/bdot',
+"""
+
+setup(
+    name = 'bdot',
+    version = VERSION,
+    description = 'Fast Matrix Multiply on Pretty Big Data (powered by Bcolz)',
+    long_description= long_desc,
+    url='https://github.com/tailwind/bdot',
     author='Waylon Flinn',
     cmdclass={'build_ext' : bdot_build_ext},
     ext_modules = [
