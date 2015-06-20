@@ -78,7 +78,7 @@ bcarray1.dot(bcarray2, out=output)
 output.flush()
 ```
 
-This method can also be used to get `carray` output for `ndarray` vector input, just leave off the `rootdir` parameter in `empty_dot`, or create your own `carray` container.
+The `out` parameter can also be used to get `carray` output with an `ndarray` vector input. If you don't want disk based storage, just leave out the `rootdir` parameter. You can also use your own `carray` container, as long as it's the correct shape.
  
 ## Test
 
