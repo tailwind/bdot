@@ -69,7 +69,7 @@ Save really big results directly to disk
 
 ```python
 # create correctly sized container (helper method, not required)
-output = bcarray1.empty_dot(bcarray2, rootdir='/path/to/bcolz/output')
+output = bcarray1.empty_like_dot(bcarray2, rootdir='/path/to/bcolz/output')
 
 # generate results directly on disk
 bcarray1.dot(bcarray2, out=output)
