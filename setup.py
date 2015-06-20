@@ -76,7 +76,7 @@ machine learning rigmarole.
 setup(
     name = 'bdot',
     version = VERSION,
-    description = 'Fast Matrix Multiply on Pretty Big Data (powered by Bcolz)',
+    description = 'Fast Dot Products on Pretty Big Data (powered by Bcolz)',
     long_description= long_desc,
     url='https://github.com/tailwind/bdot',
     author='Waylon Flinn',
@@ -102,5 +102,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4'
     ],
-    keywords='dot product matrix multiply compression bcolz numpy'
+    keywords='dot product out-of-core matrix multiply compression bcolz numpy'
 )
