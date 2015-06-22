@@ -25,6 +25,7 @@ class carray(bcolz.carray):
 			out: named parameter to be used as output
 		'''
 
+
 		# check dtype compatibility
 		if self.dtype.type != matrix.dtype.type:
 			raise ValueError("inputs must have the same dtype. Found {0} and {1}".format(self.dtype, matrix.dtype))
@@ -40,7 +41,11 @@ class carray(bcolz.carray):
 
 			# create output container, or check existing one
 			if out == None:
-				out =  np.empty(self.shape[0], dtype=self.dtype)
+				try:
+					out =  np.empty(self.shape[0], dtype=self.dtype)
+				except:
+					raise MemoryError("couldn't create result array")
+
 			else:
 				assert len(out.shape) == 1
 
