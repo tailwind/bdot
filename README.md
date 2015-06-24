@@ -1,6 +1,7 @@
 # Bdot
 ## Fast Dot Products on Pretty Big Data
 
+[![Build Status](https://travis-ci.org/tailwind/bdot.svg?branch=master)](https://travis-ci.org/tailwind/bdot)
 
 Bdot does big dot products (by making your RAM bigger on the inside). It's based on [Bcolz](https://github.com/Blosc/bcolz/) and includes transparent disk-based storage.
 
