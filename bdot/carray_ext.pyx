@@ -45,10 +45,17 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, np.nda
 	else:
 		p_dtype = np.float32
 
-	cdef np.ndarray[numpy_native_number] dot_i
+	# declaration
+	cdef:
+		Py_ssize_t i, chunk_start, chunk_len, leftover_len
+		unsigned int result_j, j
+		np.ndarray[numpy_native_number] dot_i
+		np.ndarray[numpy_native_number, ndim=2] m_i
+		chunk chunk_
 
-	cdef np.ndarray[numpy_native_number, ndim=2] m_i
-
+	# initialization
+	chunk_len = matrix.chunklen
+	leftover_len = cython.cmod(matrix.shape[0], matrix.chunklen)
 
 	try:
 		dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
@@ -57,16 +64,7 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, np.nda
 		raise MemoryError("couldn't created intermediate arrays")
 
 
-	cdef chunk chunk_
-
-	cdef Py_ssize_t i, chunk_start, chunk_len, leftover_len
-	cdef unsigned int result_j, j
-
-	chunk_len = matrix.chunklen
-
-	leftover_len = cython.cmod(matrix.shape[0], matrix.chunklen)
-
-
+	# computation
 	for i in range(matrix.nchunks):
 		chunk_ = matrix.chunks[i]
 
@@ -114,13 +112,16 @@ cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector,
 	else:
 		p_dtype = np.float32
 
-	cdef Py_ssize_t i, chunk_start, chunk_len, leftover_len
+	# declaration
+	cdef:
+		Py_ssize_t i, chunk_start, chunk_len, leftover_len
+		np.ndarray[numpy_native_number] dot_i
+		np.ndarray[numpy_native_number, ndim=2] m_i
+		chunk chunk_
 
+	# initialization
 	chunk_len = matrix.chunklen
-
-	cdef np.ndarray[numpy_native_number] dot_i
-
-	cdef np.ndarray[numpy_native_number, ndim=2] m_i
+	leftover_len = cython.cmod(matrix.shape[0], matrix.chunklen)
 
 	try:
 		dot_i = np.empty(matrix.chunklen, dtype=p_dtype)
@@ -128,12 +129,8 @@ cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector,
 	except:
 		raise MemoryError("couldn't created intermediate arrays")
 
-	cdef chunk chunk_
 
-
-	leftover_len = cython.cmod(matrix.shape[0], matrix.chunklen)
-
-
+	# computation
 	for i in range(matrix.nchunks):
 		chunk_ = matrix.chunks[i]
 
@@ -183,21 +180,25 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 	else:
 		p_dtype = np.float32
 
-	cdef Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
-	cdef Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
+	# declaration
+	cdef:
+		Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
+		Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
+		unsigned int result_k, k
+		unsigned int result_l, l
+		np.ndarray[numpy_native_number, ndim=2] m_i
+		np.ndarray[numpy_native_number, ndim=2] m_j
+		np.ndarray[numpy_native_number, ndim=2] dot_k
+		np.ndarray[numpy_native_number, ndim=2] result
+		chunk chunk_i_
+		chunk chunk_j_
 
-	# iterate through m1 in outer loop, to facilitate later chunking into output carray
+	# initialization
 	chunk_len_i = m1.chunklen
 	chunk_len_j = m2.chunklen
 
-
-	cdef np.ndarray[numpy_native_number, ndim=2] m_i
-
-	cdef np.ndarray[numpy_native_number, ndim=2] m_j
-
-	cdef np.ndarray[numpy_native_number, ndim=2] dot_k
-
-	cdef np.ndarray[numpy_native_number, ndim=2] result
+	leftover_len_i = cython.cmod(m1.shape[0], m1.chunklen)
+	leftover_len_j = cython.cmod(m2.shape[0], m2.chunklen)
 
 
 	try:
@@ -209,17 +210,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 		raise MemoryError("couldn't created intermediate arrays")
 
 
-	cdef chunk chunk_i_
-	cdef chunk chunk_j_
-
-	cdef unsigned int result_k, k
-	cdef unsigned int result_l, l
-
-
-	leftover_len_i = cython.cmod(m1.shape[0], m1.chunklen)
-	leftover_len_j = cython.cmod(m2.shape[0], m2.chunklen)
-
-
+	# computation
 	for i in range(m1.nchunks):
 
 		chunk_i_ = m1.chunks[i]
@@ -322,22 +313,25 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 	else:
 		p_dtype = np.float32
 
-	cdef Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
-	cdef Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
+	# declaration
+	cdef:
+		Py_ssize_t i, chunk_start_i, chunk_len_i, leftover_len_i
+		Py_ssize_t j, chunk_start_j, chunk_len_j, leftover_len_j
+		unsigned int result_k, k
+		unsigned int result_l, l
+		np.ndarray[numpy_native_number, ndim=2] m_i
+		np.ndarray[numpy_native_number, ndim=2] m_j
+		np.ndarray[numpy_native_number, ndim=2] dot_k
+		np.ndarray[numpy_native_number, ndim=2] result_i
+		chunk chunk_i_
+		chunk chunk_j_
 
-	# iterate through m1 in outer loop, to facilitate later chunking into output carray
+	# initialization
 	chunk_len_i = m1.chunklen
 	chunk_len_j = m2.chunklen
 
-
-
-	cdef np.ndarray[numpy_native_number, ndim=2] m_i
-
-	cdef np.ndarray[numpy_native_number, ndim=2] m_j
-
-	cdef np.ndarray[numpy_native_number, ndim=2] dot_k
-
-	cdef np.ndarray[numpy_native_number, ndim=2] result_i
+	leftover_len_i = cython.cmod(m1.shape[0], m1.chunklen)
+	leftover_len_j = cython.cmod(m2.shape[0], m2.chunklen)
 
 
 	try:
@@ -349,17 +343,7 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 		raise MemoryError("couldn't created intermediate arrays")
 
 
-	cdef chunk chunk_i_
-	cdef chunk chunk_j_
-
-	cdef unsigned int result_k, k
-	cdef unsigned int result_l, l
-
-
-	leftover_len_i = cython.cmod(m1.shape[0], m1.chunklen)
-	leftover_len_j = cython.cmod(m2.shape[0], m2.chunklen)
-
-
+	# computation
 	for i in range(m1.nchunks):
 
 		chunk_i_ = m1.chunks[i]
