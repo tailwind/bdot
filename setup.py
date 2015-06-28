@@ -27,7 +27,7 @@ try:
     from Cython.Distutils import build_ext
 except:
     exit_with_error(
-        "You need %(pkgname)s %(pkgver)s or greater to compile bcolz!"
+        "You need %(pkgname)s %(pkgver)s or greater to compile bdot!"
         % {'pkgname': 'Cython', 'pkgver': min_cython_version})
 
 if cur_cython_version < min_cython_version:
