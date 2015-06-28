@@ -3,12 +3,19 @@ __pycache__/
 
 # C extensions
 *.so
+*.o
 
 # Distribution / packaging
 build/
 dist/
 bdot/version.py
 
+# Benchmarks
+benchmarks/bdot
+benchmarks/results
+benchmarks/env
 
 # other
 bdot/carray_ext.c
+
+.DS_Store
