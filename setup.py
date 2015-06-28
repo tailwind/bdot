@@ -2,6 +2,8 @@
 from distutils.core import Extension
 from distutils.core import setup
 
+import sys
+
 
 # Some functions for showing errors and warnings.
 def _print_admonition(kind, head, body):
