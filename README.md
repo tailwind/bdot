@@ -1,8 +1,12 @@
-# Bdot
-## Fast Dot Products on Pretty Big Data
 
 [![Build Status](https://travis-ci.org/tailwind/bdot.svg?branch=master)](https://travis-ci.org/tailwind/bdot)
 
+# Bdot
+
+![Bdot Logo](bdot.png)
+
+
+## Fast Dot Products on Pretty Big Data
 Bdot does big dot products (by making your RAM bigger on the inside). It's based on [Bcolz](https://github.com/Blosc/bcolz/) and includes transparent disk-based storage.
 
 ![Bigger on the Inside](https://31.media.tumblr.com/dcd82ee9cc541ef6774572e9110de082/tumblr_inline_n3eq30Vjhh1rnbe7i.gif)
@@ -80,7 +84,7 @@ output.flush()
 ```
 
 The `out` parameter can also be used to get `carray` output with an `ndarray` vector input. If you don't want disk based storage, just leave out the `rootdir` parameter. You can also use your own `carray` container, as long as it's the correct shape.
- 
+
 ## Test
 
 ```python
