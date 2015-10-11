@@ -26,11 +26,11 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, np.nda
 	'''
 		Calculate dot product between a bcolz.carray matrix and a numpy vector.
 		Second dimension of matrix must match first dimension of vector.
-		
+
 		Arguments:
 			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format
 			vector (ndarray): one dimensional vector in a numpy array
-		
+
 		Returns:
 			ndarray: result of dot product, one value per row in orginal matrix
 	'''
@@ -77,13 +77,15 @@ cpdef _dot(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector, np.nda
 			result_j = <unsigned int> (chunk_start + j)
 			result[result_j] = dot_i[j]
 
+
 	if leftover_len > 0:
 		np.dot(matrix.leftover_array, vector, out=dot_i)
 
-		chunk_start = (i + 1) * chunk_len
+		chunk_start = matrix.nchunks * chunk_len
 		for j in range(leftover_len):
 			result_j = <unsigned int> (chunk_start + j)
 			result[result_j] = dot_i[j]
+
 
 
 @cython.wraparound(False)
@@ -93,11 +95,11 @@ cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector,
 		Calculate dot product between a bcolz.carray matrix and a numpy vector, storing the results
 		in a carray.
 		Second dimension of matrix must match first dimension of vector.
-		
+
 		Arguments:
 			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format
 			vector (ndarray): one dimensional vector in a numpy array
-		
+
 		Returns:
 			ndarray: result of dot product, one value per row in orginal matrix
 	'''
@@ -154,7 +156,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 		Calculate matrix multiply between bcolz.carray matrix and transpose of
 		a second bcolz.carray matrix.
 		Second dimension of m1 must match second dimension of m2.
-		
+
 		Requires that resulting matrix fit in RAM.
 
 		Requires that chunks and matrix multiply of chunks fit in RAM.
@@ -163,9 +165,9 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 			m1 (carray): two dimensional matrix in a bcolz.carray, row vector format
 			m2 (carray): two dimensional matrix in a bcolz.carray, row vector format
 			type_indicator(ndarray) : hack to allow use of fused types (just pass in the first row)
-		
+
 		Returns:
-			carray: result of matrix multiply between m1 and m2.T, matrix with dimensions equal to 
+			carray: result of matrix multiply between m1 and m2.T, matrix with dimensions equal to
 			first dimension of m1 by first dimension of m2
 
 	'''
@@ -296,9 +298,9 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 			m1 (carray): two dimensional matrix in a bcolz.carray, row vector format
 			m2 (carray): two dimensional matrix in a bcolz.carray, row vector format
 			type_indicator(ndarray) : hack to allow use of fused types (just pass in the first row)
-		
+
 		Returns:
-			carray: result of matrix multiply between m1 and m2.T, matrix with dimensions equal to 
+			carray: result of matrix multiply between m1 and m2.T, matrix with dimensions equal to
 			first dimension of m1 by first dimension of m2
 
 	'''
@@ -412,4 +414,3 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 
 		#write new chunk to result carray
 		c_result.append(result_i[:leftover_len_i]) # fill_chunks(self, object array_)
-
