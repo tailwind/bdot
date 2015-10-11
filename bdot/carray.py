@@ -11,18 +11,19 @@ class carray(bcolz.carray):
 
 	def dot(self, matrix, out=None):
 		'''
-			Dot product of two arrays, with bcolz.carray support. If out is provided it must
-			match the output which would be constructed exactly, or an error will be
-			raised.
+			Dot product of two arrays, with bcolz.carray support. The `out`
+			parameter may be used to specify a carray container. If no `out`
+			parameter is specified, a numpy.ndarray is created.
 
-			if you want to use the out parameter, but aren't sure how, use
-			`bdot.carray.empty_dot()`
+			If `out` is provided it's shape must match the output which would be
+			constructed, or an error will be raised. If you want to use the `out`
+			parameter, but aren't sure how, use `bdot.carray.empty_like_dot()`
 
 		Arguments:
-			matrix (carray): two dimensional matrix in a bcolz.carray, row vector format or
-			a one dimensional numpy.ndarray
+			matrix (carray): two dimensional matrix in a bcolz.carray, row
+			vector format or a one dimensional numpy.ndarray.
 
-			out: named parameter to be used as output
+			out: contianer to be used as output (numpy.ndarray or bcolz.carray)
 		'''
 
 
@@ -31,7 +32,7 @@ class carray(bcolz.carray):
 			raise ValueError("inputs must have the same dtype. Found {0} and {1}".format(self.dtype, matrix.dtype))
 
 		# check shape
-		if( (self.shape[1] != matrix.shape[0]) and 
+		if( (self.shape[1] != matrix.shape[0]) and
 			(type(matrix) == carray) and (self.shape[1] != matrix.shape[1])):
 			raise ValueError("inputs must have compatible shapes. Found {0} and {1}".format(self.shape, matrix.shape))
 
@@ -126,4 +127,3 @@ class carray(bcolz.carray):
 
 		else:
 			raise ValueError("Can't create a carray like that. Only one and two dimensions supported.")
-
