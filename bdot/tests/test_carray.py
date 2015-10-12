@@ -152,6 +152,31 @@ def test_dot_matrix_float64():
 	assert_array_almost_equal(expected, result, decimal=5)
 
 
+def test_dot_matrix_chunklen_greater_than_length():
+
+	matrix = np.random.random_sample(size=(1000, 100))
+	bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bdot.cparams(clevel=2))
+	bcarray2 = bdot.carray(matrix, chunklen=2**11, cparams=bdot.cparams(clevel=2))
+
+
+	result = np.empty((1000, 1000), dtype=np.float64)
+	bcarray1.dot(bcarray2, out=result)
+	expected = matrix.dot(matrix.T)
+
+	assert_array_almost_equal(expected, result, decimal=5)
+
+def test_dot_matrix_chunklen_greater_than_length_numpy_out():
+
+	matrix = np.random.random_sample(size=(1000, 100))
+	bcarray1 = bdot.carray(matrix, chunklen=2**9, cparams=bdot.cparams(clevel=2))
+	bcarray2 = bdot.carray(matrix, chunklen=2**11, cparams=bdot.cparams(clevel=2))
+
+
+	result = bcarray1.dot(bcarray2)
+	expected = matrix.dot(matrix.T)
+
+	assert_array_almost_equal(expected, result, decimal=5)
+
 def test_dot_matrix_float32():
 
 	matrix = np.random.random_sample(size=(1000, 100)).astype('float32')

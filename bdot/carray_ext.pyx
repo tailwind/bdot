@@ -151,7 +151,7 @@ cpdef _dot_carray(carray matrix, np.ndarray[numpy_native_number, ndim=1] vector,
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] type_indicator):
+cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=2] result):
 	'''
 		Calculate matrix multiply between bcolz.carray matrix and transpose of
 		a second bcolz.carray matrix.
@@ -191,7 +191,6 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 		np.ndarray[numpy_native_number, ndim=2] m_i
 		np.ndarray[numpy_native_number, ndim=2] m_j
 		np.ndarray[numpy_native_number, ndim=2] dot_k
-		np.ndarray[numpy_native_number, ndim=2] result
 		chunk chunk_i_
 		chunk chunk_j_
 
@@ -207,7 +206,6 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 		dot_k = np.empty((chunk_len_i, chunk_len_j), dtype=p_dtype)
 		m_i = np.empty((chunk_len_i, m1.shape[1]), dtype=p_dtype)
 		m_j = np.empty((chunk_len_j, m2.shape[1]), dtype=p_dtype)
-		result = np.empty((m1.shape[0], m2.shape[0]), dtype=p_dtype)
 	except:
 		raise MemoryError("couldn't created intermediate arrays")
 
@@ -240,7 +238,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 			dot_k = np.dot(m_i, m2.leftover_array.T)
 
 			chunk_start_i = i * chunk_len_i
-			chunk_start_j = (j + 1) * chunk_len_j
+			chunk_start_j = m2.nchunks * chunk_len_j
 			for k in range(chunk_len_i):
 				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(leftover_len_j):
@@ -274,7 +272,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=1] typ
 			dot_k = np.dot(m1.leftover_array, m2.leftover_array.T)
 
 			chunk_start_i = (i + 1) * chunk_len_i
-			chunk_start_j = (j + 1) * chunk_len_j
+			chunk_start_j = m2.nchunks * chunk_len_j
 			for k in range(leftover_len_i):
 				result_k = <unsigned int> (chunk_start_i + k)
 				for l in range(leftover_len_j):
@@ -371,7 +369,7 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 		if leftover_len_j > 0:
 			dot_k = np.dot(m_i, m2.leftover_array.T)
 
-			chunk_start_j = (j + 1) * chunk_len_j
+			chunk_start_j = m2.nchunks * chunk_len_j
 			for k in range(chunk_len_i):
 				for l in range(leftover_len_j):
 					result_l = <unsigned int> (chunk_start_j + l)
@@ -406,7 +404,7 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 			dot_k = np.dot(m1.leftover_array, m2.leftover_array.T)
 
 			chunk_start_i = (i + 1) * chunk_len_i
-			chunk_start_j = (j + 1) * chunk_len_j
+			chunk_start_j = m2.nchunks * chunk_len_j
 			for k in range(leftover_len_i):
 				for l in range(leftover_len_j):
 					result_l = <unsigned int> (chunk_start_j + l)

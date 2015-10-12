@@ -41,7 +41,7 @@ class carray(bcolz.carray):
 			assert len(matrix.shape) == 1
 
 			# create output container, or check existing one
-			if out == None:
+			if out is None:
 				try:
 					out =  np.empty(self.shape[0], dtype=self.dtype)
 				except:
@@ -66,16 +66,20 @@ class carray(bcolz.carray):
 			assert len(matrix.shape) == 2
 
 			# create output container, or check existing one
-			if out == None:
+			if out is None:
 				out = self.empty_like_dot(matrix)
 			else:
-				assert isinstance(out, bcolz.carray)
 				assert len(out.shape) == 2
 				assert out.shape[0] == self.shape[0]
 				assert out.shape[1] == matrix.shape[0]
 
-			# output carray
-			carray_ext._dot_mat_carray(self, matrix, matrix[0], out)
+
+			if type(out) == np.ndarray:
+				carray_ext._dot_mat(self, matrix, out)
+			else:
+				# output carray
+				assert isinstance(out, bcolz.carray)
+				carray_ext._dot_mat_carray(self, matrix, matrix[0], out)
 
 			return out
 
