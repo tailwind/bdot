@@ -258,7 +258,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=2] res
 			dot_k = np.dot(m1.leftover_array, m_j.T)
 
 			# copy to result
-			chunk_start_i = (i + 1) * chunk_len_i
+			chunk_start_i = m1.nchunks * chunk_len_i
 			chunk_start_j = j * chunk_len_j
 			for k in range(leftover_len_i):
 				result_k = <unsigned int> (chunk_start_i + k)
@@ -271,7 +271,7 @@ cpdef _dot_mat(carray m1, carray m2, np.ndarray[numpy_native_number, ndim=2] res
 		if leftover_len_j > 0:
 			dot_k = np.dot(m1.leftover_array, m2.leftover_array.T)
 
-			chunk_start_i = (i + 1) * chunk_len_i
+			chunk_start_i = m1.nchunks * chunk_len_i
 			chunk_start_j = m2.nchunks * chunk_len_j
 			for k in range(leftover_len_i):
 				result_k = <unsigned int> (chunk_start_i + k)
@@ -391,7 +391,6 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 			dot_k = np.dot(m1.leftover_array, m_j.T)
 
 			# copy to result
-			chunk_start_i = (i + 1) * chunk_len_i
 			chunk_start_j = j * chunk_len_j
 			for k in range(leftover_len_i):
 				for l in range(chunk_len_j):
@@ -403,7 +402,6 @@ cpdef _dot_mat_carray(carray m1, carray m2, np.ndarray[numpy_native_number, ndim
 		if leftover_len_j > 0:
 			dot_k = np.dot(m1.leftover_array, m2.leftover_array.T)
 
-			chunk_start_i = (i + 1) * chunk_len_i
 			chunk_start_j = m2.nchunks * chunk_len_j
 			for k in range(leftover_len_i):
 				for l in range(leftover_len_j):
