@@ -1,3 +1,6 @@
+> This repo is no longer actively being maintained. Don't be dissapointed though, check out https://github.com/waylonflinn/bvec instead!
+
+
 
 [![Build Status](https://travis-ci.org/tailwind/bdot.svg?branch=master)](https://travis-ci.org/tailwind/bdot)
 
